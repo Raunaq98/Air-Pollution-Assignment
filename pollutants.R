@@ -72,3 +72,25 @@ complete<- function(directory, id = 1:332){
 #return a vector of correlations for the monitors that meet the threshold requirement. 
 #If no monitors meet the threshold requirement, then the function should return a numeric vector of length 0.
 
+
+corr <- function(directory,threshold=0){
+  location_dir <- paste0(getwd(),"/",directory)
+ 
+  corr_vector<- NULL
+  for(i in 1:332){
+    if (i <10){
+      data_file2<- read.csv(paste(location_dir,"/00",as.character(i),".csv",sep=""), header=TRUE, as.is= TRUE)
+    }
+    else if (i <100){
+      data_file2<- read.csv(paste(location_dir,"/0",as.character(i),".csv",sep=""), header=TRUE, as.is= TRUE)
+    }
+    else {
+      data_file2<- read.csv(paste(location_dir,"/",as.character(i),".csv",sep=""), header=TRUE, as.is= TRUE)
+    }
+    corrected_data<- data_file2[complete.cases(data_file2),]
+    if( nrow(corrected_data) > threshold){
+      corr_vector<- c(corr_vector,cor(corrected_data[,"sulfate"],corrected_data[,"nitrate"]))
+    }
+  }
+  corr_vector
+}
